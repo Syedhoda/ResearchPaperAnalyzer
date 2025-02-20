@@ -30,12 +30,7 @@
           <div id="paperTextContainer" class="mb-4 hidden">
             <label for="paper" class="block text-sm font-medium">Extracted Text:</label>
             <textarea id="paper" rows="10" class="w-full p-2 mt-1 border border-gray-200 rounded"></textarea>
-          </div>
-        </form>
-      </div>
-    </div>
-    <p class="mt-6 text-sm text-gray-600">Developed by: Syed Rafiq ul Hoda - Email: <a href="mailto:syedrafiqhoda@gmail.com" class="text-blue-600">syedrafiqhoda@gmail.com</a></p>
-</div>
+          </div> 
           <div class="mb-4">
             <label for="uploadPaper" class="block text-sm font-medium">Upload Research Paper (PDF):</label>
             <input type="file" id="uploadPaper" class="mt-1" accept="application/pdf">
