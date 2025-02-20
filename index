@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hoda - Research Paper Analyzer Tool</title>
+  <title>AI Resume Analyzer</title>
   <link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.3/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://npmcdn.com/pdfjs-dist@2.9.359/web/pdf_viewer.css">
@@ -23,19 +24,19 @@
 </head>
 <body class="bg-gray-100">
   <div class="container mx-auto py-10 px-4">
-    <h1 class="text-4xl font-bold mb-5">"Syed Rafiq ul Hoda" Research Paper Analyzer Tool</h1>
+    <h1 class="text-4xl font-bold mb-5">AI Resume Analyzer</h1>
     <div class="flex flex-wrap -mx-4">
       <div class="w-full lg:w-1/2 px-4">
-        <form id="researchPaperForm" class="bg-white p-6 rounded shadow-lg">
-          <div id="paperTextContainer" class="mb-4 hidden">
-            <label for="paper" class="block text-sm font-medium">Extracted Text:</label>
-            <textarea id="paper" rows="10" class="w-full p-2 mt-1 border border-gray-200 rounded"></textarea>
-          </div> 
-          <div class="mb-4">
-            <label for="uploadPaper" class="block text-sm font-medium">Upload Research Paper (PDF):</label>
-            <input type="file" id="uploadPaper" class="mt-1" accept="application/pdf">
+        <form id="resumeForm" class="bg-white p-6 rounded shadow-lg">
+          <div id="resumeTextContainer" class="mb-4 hidden">
+            <label for="resume" class="block text-sm font-medium">Resume text:</label>
+            <textarea id="resume" rows="10" class="w-full p-2 mt-1 border border-gray-200 rounded"></textarea>
           </div>
-          <button type="submit" id="analyzeButton" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 hidden">Analyze Paper</button>
+          <div class="mb-4">
+            <label for="uploadResume" class="block text-sm font-medium">Upload Resume (PDF):</label>
+            <input type="file" id="uploadResume" class="mt-1" accept="application/pdf">
+          </div>
+          <button type="submit" id="analyzeButton" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 hidden">Analyze!</button>
         </form>
         <section id="output" class="bg-white p-6 mt-8 mb-10 rounded shadow-lg text-gray-900"></section>
       </div>
@@ -93,27 +94,17 @@
       updatePdfView();
     });
 
-    document.getElementById("researchPaperForm").addEventListener("submit", (event) => {
+    document.getElementById("resumeForm").addEventListener("submit", (event) => {
       event.preventDefault();
-      const promptTemplate = `
-        Read the provided research paper and generate a structured summary including the following:
-        
-        Title & Authors: Mention the title and authors of the paper.
-        Summary: Provide a brief overview of the research, including its objectives and key findings.
-        Methodology: Describe the methodology, including the source of data and any experiments or analysis conducted in the study.
-        Findings: State the main findings or results of the research.
-        Shortcomings: Identify any limitations or challenges mentioned by the authors.
-        Future Work: Highlight any proposed directions for further research.
+      const promptTemplate = "Analyze the given resume text and return the GPA, years of experiences, 1 sentence summary of the candidate and a list of initial screen questions: {Resume text}";
+      const resumeText = document.getElementById("resume").value;
 
-        {Paper text}`;
-      const paperText = document.getElementById("paper").value;
-
-      if (!paperText.trim()) {
-        alert('No text was extracted from the PDF. Try with a different file.');
+      if (!resumeText.trim()) {
+        alert('No text was extracted from your PDF. Try with a different file.');
         return;
       }
       
-      const substitutedPrompt = promptTemplate.replace("{Paper text}", paperText);
+      const substitutedPrompt = promptTemplate.replace("{Resume text}", resumeText);
       
       console.log(substitutedPrompt);
 
@@ -125,7 +116,7 @@
       ws.addEventListener("open", () => {
           ws.send(
             JSON.stringify({
-              appId: "scientist-tree",
+              appId: "ball-five",
               prompt: substitutedPrompt
             })
           );
@@ -148,7 +139,7 @@
       });
     });
 
-    document.getElementById("uploadPaper").addEventListener("change", async (event) => {
+    document.getElementById("uploadResume").addEventListener("change", async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
@@ -165,18 +156,18 @@
           extractedText += `${pageText} `;
         }
 
-        document.getElementById("paper").value = extractedText.trim();
+        document.getElementById("resume").value = extractedText.trim();
 
         // Hide file input and textarea
-        document.getElementById("paperTextContainer").classList.add("hidden");
-        document.getElementById("uploadPaper").classList.add("hidden");
+        document.getElementById("resumeTextContainer").classList.add("hidden");
+        document.getElementById("uploadResume").classList.add("hidden");
         document.getElementById("analyzeButton").classList.remove("hidden");
 
         // Display the PDF preview
         currentPage = 1;
         await updatePdfView();
 
-        // Show the previous/next buttons and page info, if paper has more than 1 page
+        // Show the previous/next buttons and page info, if resume has more than 1 page
         if (pdf.numPages > 1) {
           document.getElementById("previousButton").classList.remove("hidden");
           document.getElementById("nextButton").classList.remove("hidden");
